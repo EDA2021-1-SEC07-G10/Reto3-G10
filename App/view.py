@@ -25,7 +25,9 @@ import sys
 import controller
 from DISClib.ADT import list as lt
 assert cf
-
+from DISClib.ADT import orderedmap as om
+from DISClib.DataStructures import mapentry as me
+from DISClib.ADT import map as mp
 
 """
 La vista se encarga de la interacción con el usuario
@@ -35,6 +37,7 @@ operación solicitada
 """
 
 def printMenu():
+    print("")
     print("Bienvenido")
     print("1 - Cargar información en el catálogo")
     print("2 - Caracterizar las reproducciones")
@@ -55,8 +58,27 @@ while True:
     if int(inputs[0]) == 1:
         print("Cargando información de los archivos ....")
         catalog = controller.loadData(catalog)
+        
     elif int(inputs[0]) == 2:
-        pass
+        print("")
+        print("-------------------------------------------------  Requerimiento #1  --------------------------------------------------------")
+        print("")
+        print("Se pide obtener información filtrándola por característica de contenido y un cierto rango dentro de la misma.")
+        print("Por ello se propone la solución de crear un RBT por cada característica.")
+        print("Así, el filtro por característica y rango es mucho más fácil:")
+        print(" > Directamente se escoge para analizar el Map de la característica dada por el usuario.")
+        print(" > Ya en el Map, teniendo el rango dado, se analizan solo los elementos dentro de las llaves que estén dentro de dicho rango.")
+        print("Por cada valor existente de la característica se almacenan los eventos que presentan dicho valor.")
+        print("")
+        print("A continuación se presentan los parámetros de altura y cantidad de entradas para cada Map (característica):")
+        print("")
+        print(" > Instrumentalness: Altura = " + str(om.height(catalog["propiedades"]["instrumentalness"])) + " || Entradas = " + str(om.size(catalog["propiedades"]["instrumentalness"])))
+        print(" > Acousticness: Altura = " + str(om.height(catalog["propiedades"]["acousticness"])) + " || Entradas = " + str(om.size(catalog["propiedades"]["acousticness"])))
+        print(" > Liveness: Altura = " + str(om.height(catalog["propiedades"]["liveness"])) + " || Entradas = " + str(om.size(catalog["propiedades"]["liveness"])))
+        print(" > Speechiness: Altura = " + str(om.height(catalog["propiedades"]["speechiness"])) + " || Entradas = " + str(om.size(catalog["propiedades"]["speechiness"])))
+        print(" > Energy: Altura = " + str(om.height(catalog["propiedades"]["energy"])) + " || Entradas = " + str(om.size(catalog["propiedades"]["energy"])))
+        print(" > Danceability: Altura = " + str(om.height(catalog["propiedades"]["danceability"])) + " || Entradas = " + str(om.size(catalog["propiedades"]["danceability"])))
+        print(" > Valence: Altura = " + str(om.height(catalog["propiedades"]["valence"])) + " || Entradas = " + str(om.size(catalog["propiedades"]["valence"])))
 
     else:
         sys.exit(0)

@@ -36,26 +36,79 @@ assert cf
 # Construccion de modelos
 
 def initCatalog(catalog):
-    catalog = {'eventos': None}
-    catalog['eventos'] = om.newMap(omaptype='RBT')
+    catalog = {'fechas': None, 'propiedades': None}
+    catalog['fechas'] = om.newMap(omaptype='RBT')
+    catalog['propiedades'] = {'instrumentalness': om.newMap(omaptype='RBT'),
+                              'acousticness': om.newMap(omaptype='RBT'),
+                              'liveness': om.newMap(omaptype='RBT'),
+                              'speechiness': om.newMap(omaptype='RBT'),
+                              'energy': om.newMap(omaptype='RBT'),
+                              'danceability': om.newMap(omaptype='RBT'),
+                              'valence': om.newMap(omaptype='RBT')}
     return catalog
 
 # Funciones para agregar informacion al catalogo
 
-def addEvent(catalog, event):
-    
+def addEvent1(catalog, event):
     key = event['created_at']
-    #print(catalog)
-    contains = om.contains(catalog['eventos'], key)
+    contains = om.contains(catalog['fechas'], key)
     if not contains:
         structure = {'eventos': lt.newList(datastructure="ARRAY_LIST")}
         lt.addLast(structure['eventos'], event)
-        om.put(catalog['eventos'], key, structure)
+        om.put(catalog['fechas'], key, structure)
     else:
-        obtained = om.get(catalog['eventos'], key)
+        obtained = om.get(catalog['fechas'], key)
         value = obtained['value']
         lt.addLast(value['eventos'], event)
-        om.put(catalog['eventos'], key, value)
+        om.put(catalog['fechas'], key, value)
+    return catalog
+
+
+def processForAE2(place, event, key, catalog):
+    contains = om.contains(place, key)
+    if not contains:
+        structure = {'eventos': lt.newList(datastructure="ARRAY_LIST")}
+        lt.addLast(structure['eventos'], event)
+        om.put(place, key, structure)
+    else:
+        obtained = om.get(place, key)
+        value = obtained['value']
+        lt.addLast(value['eventos'], event)
+        om.put(place, key, value)
+    return catalog
+
+
+def addEvent2(catalog, event):
+    
+    # 'instrumentalness'
+    key = event['instrumentalness']
+    place = catalog['propiedades']['instrumentalness']
+    catalog = processForAE2(place, event, key, catalog)
+    # 'acousticness'
+    key = event['acousticness']
+    place = catalog['propiedades']['acousticness']
+    catalog = processForAE2(place, event, key, catalog)
+    # 'liveness'
+    key = event['liveness']
+    place = catalog['propiedades']['liveness']
+    catalog = processForAE2(place, event, key, catalog)
+    # 'speechiness'
+    key = event['speechiness']
+    place = catalog['propiedades']['speechiness']
+    catalog = processForAE2(place, event, key, catalog)
+    # 'energy'
+    key = event['energy']
+    place = catalog['propiedades']['energy']
+    catalog = processForAE2(place, event, key, catalog)
+    # 'danceability'
+    key = event['danceability']
+    place = catalog['propiedades']['danceability']
+    catalog = processForAE2(place, event, key, catalog)
+    # 'valence'
+    key = event['valence']
+    place = catalog['propiedades']['valence']
+    catalog = processForAE2(place, event, key, catalog)
+    
     return catalog
 
 # Funciones para creacion de datos

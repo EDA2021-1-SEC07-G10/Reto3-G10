@@ -33,15 +33,17 @@ El controlador se encarga de mediar entre la vista y el modelo.
 
 def loadData(catalog):
     catalog = model.initCatalog(catalog)
-    infofile = cf.data_dir + 'user_track_hashtag_timestamp-5pct.csv'
-    input_file = csv.DictReader(open(infofile, encoding="utf-8"),
+    infofile1 = cf.data_dir + 'user_track_hashtag_timestamp-small.csv'
+    input_file1 = csv.DictReader(open(infofile1, encoding="utf-8"),
                                 delimiter=",")
-    i = 1
-    for event in input_file:
-        model.addEvent(catalog, event)
-        print(i)
-        i += 1
-    print("finished!!!")
+    for event in input_file1:
+        model.addEvent1(catalog, event)
+    infofile2 = cf.data_dir + 'context_content_features-small.csv'
+    input_file2 = csv.DictReader(open(infofile2, encoding="utf-8"),
+                                delimiter=",")
+    j = 1
+    for event in input_file2:
+        model.addEvent2(catalog, event)
     return catalog
 
 # Funciones para la carga de datos
