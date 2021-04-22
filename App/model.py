@@ -27,19 +27,36 @@
 
 import config as cf
 from DISClib.ADT import list as lt
-from DISClib.ADT import map as mp
+from DISClib.ADT import orderedmap as om
 from DISClib.DataStructures import mapentry as me
+from DISClib.ADT import map as mp
 from DISClib.Algorithms.Sorting import shellsort as sa
 assert cf
 
-"""
-Se define la estructura de un catálogo de videos. El catálogo tendrá dos listas, una para los videos, otra para las categorias de
-los mismos.
-"""
-
 # Construccion de modelos
 
+def initCatalog(catalog):
+    catalog = {'eventos': None}
+    catalog['eventos'] = om.newMap(omaptype='RBT')
+    return catalog
+
 # Funciones para agregar informacion al catalogo
+
+def addEvent(catalog, event):
+    
+    key = event['created_at']
+    #print(catalog)
+    contains = om.contains(catalog['eventos'], key)
+    if not contains:
+        structure = {'eventos': lt.newList(datastructure="ARRAY_LIST")}
+        lt.addLast(structure['eventos'], event)
+        om.put(catalog['eventos'], key, structure)
+    else:
+        obtained = om.get(catalog['eventos'], key)
+        value = obtained['value']
+        lt.addLast(value['eventos'], event)
+        om.put(catalog['eventos'], key, value)
+    return catalog
 
 # Funciones para creacion de datos
 
