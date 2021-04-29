@@ -109,6 +109,8 @@ def addEvent2(catalog, event):
     place = catalog['propiedades']['valence']
     catalog = processForAE2(place, event, key, catalog)
     
+    #Prueba 1
+
     return catalog
 
 # Funciones para creacion de datos
