@@ -55,7 +55,7 @@ Menu principal
 while True:
     printMenu()
     inputs = input('Seleccione una opción para continuar\n')
-    if int(inputs[0]) == 1:
+    if (inputs[0]) == 1:
         print("Cargando información de los archivos ....")
         catalog = controller.loadData(catalog)
         
@@ -79,7 +79,13 @@ while True:
         print(" > Energy: Altura = " + str(om.height(catalog["propiedades"]["energy"])) + " || Entradas = " + str(om.size(catalog["propiedades"]["energy"])))
         print(" > Danceability: Altura = " + str(om.height(catalog["propiedades"]["danceability"])) + " || Entradas = " + str(om.size(catalog["propiedades"]["danceability"])))
         print(" > Valence: Altura = " + str(om.height(catalog["propiedades"]["valence"])) + " || Entradas = " + str(om.size(catalog["propiedades"]["valence"])))
-
+    elif int(inputs[0]) == 3:
+        min_Energy=float(input("Minimo Energy: "))
+        max_Energy=float(input("Maximo Energy: "))
+        min_Danceability=float(input("Minimo Danceability: "))
+        max_Danceability=float(input("Maximo Danceability: "))
+        respuesta= controller.req_2(min_Energy, max_Energy, min_Danceability, max_Danceability, catalog)   
+        print(respuesta) 
     else:
         sys.exit(0)
 sys.exit(0)

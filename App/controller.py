@@ -51,3 +51,7 @@ def loadData(catalog):
 # Funciones de ordenamiento
 
 # Funciones de consulta sobre el catálogo
+
+def req_2(min_Energy, max_Energy, min_Danceability, max_Danceability, catalog):
+
+    return model.requerimiento_2(min_Energy, max_Energy, min_Danceability, max_Danceability, catalog)
