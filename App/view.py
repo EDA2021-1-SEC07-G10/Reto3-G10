@@ -47,6 +47,53 @@ def printMenu():
     print("6 - Indicar el género musical más escuchado en el tiempo")
     print("0 - Salir")
 
+def preguntar_generos():
+    """
+    Función que, en el req. 4, se utiliza para recibir las entradas de géneros
+    Valida si el usuario quiere crear géneros nuevos o añadir existentes
+    """
+    opcion = int(input("Si desea añadir un género existente, ingrese 0. Si desea crear uno nuevo, ingrese 1: "))
+    if opcion == 0:
+        genero = input("Ingrese el nombre del género: ")
+        return genero
+    elif opcion == 1:
+        genero = input("Ingrese el nombre del género: ")
+        min_genero = float(input("Ingrese el valor mínimo de Tempo para el género: "))
+        max_genero = float(input("Ingrese el valor máximo de Tempo para el género: "))
+        rta = [genero, min_genero, max_genero]
+        return rta        
+
+def preguntar_crear():
+    """
+    Función que, en el req. 4, se utiliza para validar si quieren añadirse más géneros
+    """
+    opcion = int(input("Si desea añadir un género nuevo, ingrese 1. De lo contrario, ingrese 0: "))
+    if opcion == 0:
+        return False
+    elif opcion == 1:
+        return True
+
+def print_genero(genero):
+    info_genero = genero["info"]
+    nombre = info_genero[0]
+    minimo = info_genero[1]
+    maximo = info_genero[2]
+    cant_artistas = genero["artistas"]
+    cant_eventos = genero["eventos"]
+    ten_artists = genero["10artistas"]
+    print("=======  " + nombre.upper() + "  =======")
+    print("Para " + nombre.lower() + " con Tempo entre " + str(minimo) + " y " + str(maximo) + " BPM:")
+    print("Se encontraron " + str(cant_eventos) + " eventos, y " + str(cant_artistas) + " artistas únicos. Algunos de ellos son:")
+    for artist in lt.iterator(ten_artists):
+        print("> " + str(artist))
+
+def print_Req5(resultado, minimo, maximo):
+    print("Para el rango de horas " + str(minimo) + " a " + str(maximo) + " el género más escuchado fue " + resultado['genero'] + 
+    " con " + str(resultado['cantidad_genero']) + " reproducciones")
+    print("El promedio Vader de 10 pistas aleatorias en dicho género fue:")
+    for track in lt.iterator(resultado['tracks']):
+        print("> Track " + track['info'][1] + " con " + str(track['conteo']) + " hashtags, y vader " + str(track['vader_prom']))
+
 catalog = None
 
 """
@@ -54,7 +101,8 @@ Menu principal
 """
 while True:
     printMenu()
-    inputs = input('Seleccione una opción para continuar\n')
+    inputs = input('Seleccione una opción para continuar: ')
+    print("")
     if int(inputs[0]) == 1:
         print("Cargando información de los archivos ....")
         catalog = controller.loadData(catalog)
@@ -63,22 +111,58 @@ while True:
         print("")
         print("-------------------------------------------------  Requerimiento #1  --------------------------------------------------------")
         print("")
-        print("Se pide obtener información filtrándola por característica de contenido y un cierto rango dentro de la misma.")
-        print("Por ello se propone la solución de crear un RBT por cada característica.")
-        print("Así, el filtro por característica y rango es mucho más fácil:")
-        print(" > Directamente se escoge para analizar el Map de la característica dada por el usuario.")
-        print(" > Ya en el Map, teniendo el rango dado, se analizan solo los elementos dentro de las llaves que estén dentro de dicho rango.")
-        print("Por cada valor existente de la característica se almacenan los eventos que presentan dicho valor.")
+        caracteristica = input("Ingrese la característica de contenido: ")
+        minimo = str(input("Ingrese el valor mínimo para la característica: "))
+        maximo = str(input("Ingrese el valor máximo para la característica: "))
         print("")
-        print("A continuación se presentan los parámetros de altura y cantidad de entradas para cada Map (característica):")
+        resultado = controller.req1(catalog, caracteristica, minimo, maximo)
+        print("Para la característica " + caracteristica + ", en el rango " + minimo + " a " + maximo + ":")
+        print("> Total de eventos o reproducciones: " + str(resultado[0]))
+        print("> Total de artistas únicos: " + str(resultado[1]))
+
+    elif int(inputs[0]) == 4:
         print("")
-        print(" > Instrumentalness: Altura = " + str(om.height(catalog["propiedades"]["instrumentalness"])) + " || Entradas = " + str(om.size(catalog["propiedades"]["instrumentalness"])))
-        print(" > Acousticness: Altura = " + str(om.height(catalog["propiedades"]["acousticness"])) + " || Entradas = " + str(om.size(catalog["propiedades"]["acousticness"])))
-        print(" > Liveness: Altura = " + str(om.height(catalog["propiedades"]["liveness"])) + " || Entradas = " + str(om.size(catalog["propiedades"]["liveness"])))
-        print(" > Speechiness: Altura = " + str(om.height(catalog["propiedades"]["speechiness"])) + " || Entradas = " + str(om.size(catalog["propiedades"]["speechiness"])))
-        print(" > Energy: Altura = " + str(om.height(catalog["propiedades"]["energy"])) + " || Entradas = " + str(om.size(catalog["propiedades"]["energy"])))
-        print(" > Danceability: Altura = " + str(om.height(catalog["propiedades"]["danceability"])) + " || Entradas = " + str(om.size(catalog["propiedades"]["danceability"])))
-        print(" > Valence: Altura = " + str(om.height(catalog["propiedades"]["valence"])) + " || Entradas = " + str(om.size(catalog["propiedades"]["valence"])))
+        print("-------------------------------------------------  Requerimiento #3  --------------------------------------------------------")
+        print("")
+        min_instr = float(input("Ingrese el valor mínimo para Instrumentalness: "))
+        max_instr = float(input("Ingrese el valor máximo para Instrumentalness: "))
+        min_tempo = float(input("Ingrese el valor mínimo para Tempo: "))
+        max_tempo = float(input("Ingrese el valor máximo para Tempo: "))
+        print("")
+        resultado = controller.req3(catalog, min_instr, max_instr, min_tempo, max_tempo)
+        print("Para un Instrumentalness entre " + str(min_instr) + " y " + str(max_instr) + ", y un Tempo entre " + str(min_tempo) + " y " + str(max_tempo) + ":")
+        print("> Total de Tracks únicos: " + str(resultado[0]))
+        print("> Track 1: " + str(resultado[1][0]) + " con Instrumentalness de " + str(resultado[1][1]) + " y Tempo de " + str(resultado[1][2]))
+        print("> Track 2: " + str(resultado[2][0]) + " con Instrumentalness de " + str(resultado[2][1]) + " y Tempo de " + str(resultado[2][2]))
+        print("> Track 3: " + str(resultado[3][0]) + " con Instrumentalness de " + str(resultado[3][1]) + " y Tempo de " + str(resultado[3][2]))
+        print("> Track 4: " + str(resultado[4][0]) + " con Instrumentalness de " + str(resultado[4][1]) + " y Tempo de " + str(resultado[4][2]))
+        print("> Track 5: " + str(resultado[5][0]) + " con Instrumentalness de " + str(resultado[5][1]) + " y Tempo de " + str(resultado[5][2]))
+    
+    elif int(inputs[0]) == 5:
+        print("")
+        print("-------------------------------------------------  Requerimiento #4  --------------------------------------------------------")
+        print("")
+        generos = lt.newList(datastructure='ARRAY_LIST')
+        continuar = True
+        while continuar:
+            nuevo = preguntar_generos()
+            lt.addLast(generos, nuevo)
+            continuar = preguntar_crear()
+        resultado = controller.req4(catalog, generos)
+        print("El total de eventos para los siguientes géneros fue de: " + str(resultado[1]))
+        for genero in lt.iterator(resultado[0]):
+            print_genero(genero)
+
+    elif int(inputs[0]) == 6:
+        print("")
+        print("-------------------------------------------------  Requerimiento #5  --------------------------------------------------------")
+        print("")
+        #minimo = input("Ingrese el valor mínimo de hora (únicamente en formato hh:mm:ss): ")
+        #maximo = input("Ingrese el valor máximo de hora (únicamente en formato hh:mm:ss): ")
+        minimo = "05:00:00"
+        maximo = "07:00:00"
+        resultado = controller.req5(catalog, minimo, maximo)
+        print_Req5(resultado, minimo, maximo)
 
     else:
         sys.exit(0)

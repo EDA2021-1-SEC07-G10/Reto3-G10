@@ -341,7 +341,10 @@ def req5(catalog, minimo, maximo):
         for hasht in datos_event['hashtags']:
             sent_hashtag = om.get(map_sentiments, hasht.lower())
             if sent_hashtag != None:
-                vader = float(sent_hashtag['value']['vader_avg'])
+                try:
+                    vader = float(sent_hashtag['value']['vader_avg'])
+                except:
+                    print(sent_hashtag['value']['vader_avg'])
                 if vader != None:
                     promedio += vader
                     conteo += 1

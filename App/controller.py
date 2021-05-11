@@ -23,7 +23,7 @@
 import config as cf
 import model
 import csv
-
+from DISClib.ADT import list as lt
 
 """
 El controlador se encarga de mediar entre la vista y el modelo.
@@ -38,12 +38,21 @@ def loadData(catalog):
                                 delimiter=",")
     for event in input_file1:
         model.addEvent1(catalog, event)
+        model.addEvent1_v2(catalog, event)
+
     infofile2 = cf.data_dir + 'context_content_features-small.csv'
     input_file2 = csv.DictReader(open(infofile2, encoding="utf-8"),
                                 delimiter=",")
-    j = 1
     for event in input_file2:
         model.addEvent2(catalog, event)
+        model.addEvent3(catalog, event)
+    
+    infofile3 = cf.data_dir + 'sentiment_values.csv'
+    input_file3 = csv.DictReader(open(infofile3, encoding="utf-8"),
+                                delimiter=",")
+    for event in input_file3:
+        model.addEvent4(catalog, event)
+        
     return catalog
 
 # Funciones para la carga de datos
@@ -51,3 +60,42 @@ def loadData(catalog):
 # Funciones de ordenamiento
 
 # Funciones de consulta sobre el catálogo
+
+def def_generos(contador, generos, elemento):
+    if elemento.lower() == "reggae":
+        nuevo = ["reggae", 60.0, 90.0]
+    elif elemento.lower() == "down-tempo":
+        nuevo = ["down-tempo", 70.0, 100.0]
+    elif elemento.lower() == "chill-out":
+        nuevo = ["chill-out", 90.0, 120.0]
+    elif elemento.lower() == "hip-hop":
+        nuevo = ["hip-hop", 85.0, 115.0]
+    elif elemento.lower() == "jazz and funk":
+        nuevo = ["jazz and funk", 120.0, 125.0]
+    elif elemento.lower() == "pop":
+        nuevo = ["pop", 100.0, 130.0]
+    elif elemento.lower() == "r&b":
+        nuevo = ["r&b", 60.0, 80.0]
+    elif elemento.lower() == "rock":
+        nuevo = ["rock", 110.0, 140.0]
+    elif elemento.lower() == "metal":
+        nuevo = ["metal", 100.0, 160.0]
+    lt.changeInfo(generos, contador, nuevo)
+
+def req1(catalog, caracteristica, minimo, maximo):
+    return model.req1(catalog, caracteristica, minimo, maximo)
+
+def req3(catalog, min_instr, max_instr, min_tempo, max_tempo):
+    return model.req3(catalog, min_instr, max_instr, min_tempo, max_tempo)
+
+def req4(catalog, generos):
+    contador = 1
+    while contador <= lt.size(generos):
+        genero = lt.getElement(generos, contador)
+        if type(genero) != list:
+            def_generos(contador, generos, genero)
+        contador += 1
+    return model.req4(catalog, generos)
+
+def req5(catalog, minimo, maximo):
+    return model.req5(catalog, minimo, maximo)
