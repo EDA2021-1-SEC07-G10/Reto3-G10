@@ -157,10 +157,8 @@ while True:
         print("")
         print("-------------------------------------------------  Requerimiento #5  --------------------------------------------------------")
         print("")
-        #minimo = input("Ingrese el valor mínimo de hora (únicamente en formato hh:mm:ss): ")
-        #maximo = input("Ingrese el valor máximo de hora (únicamente en formato hh:mm:ss): ")
-        minimo = "05:00:00"
-        maximo = "07:00:00"
+        minimo = input("Ingrese el valor mínimo de hora (únicamente en formato hh:mm:ss): ")
+        maximo = input("Ingrese el valor máximo de hora (únicamente en formato hh:mm:ss): ")
         resultado = controller.req5(catalog, minimo, maximo)
         print_Req5(resultado, minimo, maximo)
 
