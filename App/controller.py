@@ -99,3 +99,4 @@ def req4(catalog, generos):
 
 def req5(catalog, minimo, maximo):
     return model.req5(catalog, minimo, maximo)
+    
