@@ -31,6 +31,7 @@ from DISClib.ADT import orderedmap as om
 from DISClib.DataStructures import mapentry as me
 from DISClib.ADT import map as mp
 from DISClib.Algorithms.Sorting import shellsort as sa
+from DISClib.DataStructures import listiterator as it
 import random
 import statistics as stat
 assert cf
@@ -198,7 +199,6 @@ def req1(catalog, caracteristica, minimo, maximo):
     total_artists = om.size(artists_map)
 
     return [total_events, total_artists]
-
 
 def req3(catalog, min_instr, max_instr, min_tempo, max_tempo):
     """

@@ -100,3 +100,6 @@ def req4(catalog, generos):
 def req5(catalog, minimo, maximo):
     return model.req5(catalog, minimo, maximo)
     
+def req_2(min_Energy, max_Energy, min_Danceability, max_Danceability, catalog):
+
+    return model.requerimiento_2(min_Energy, max_Energy, min_Danceability, max_Danceability, catalog)
