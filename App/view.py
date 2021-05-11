@@ -47,6 +47,15 @@ def printMenu():
     print("6 - Indicar el género musical más escuchado en el tiempo")
     print("0 - Salir")
 
+def ordenar_req2(lista):
+    i=1
+    while i<=5:
+        track=lt.getElement(lista,i)
+        print("Track ", i, " : " , track["track_id"], "with energy of ", track["energy"], " and danceability of ", track["danceability"])
+        i+=1
+
+
+
 def preguntar_generos():
     """
     Función que, en el req. 4, se utiliza para recibir las entradas de géneros
@@ -120,6 +129,21 @@ while True:
         print("> Total de eventos o reproducciones: " + str(resultado[0]))
         print("> Total de artistas únicos: " + str(resultado[1]))
 
+    elif int(inputs[0]) == 3:
+        print("")
+        print("-------------------------------------------------  Requerimiento #2  --------------------------------------------------------")
+        print("")
+        min_Energy = float(input("Ingrese el valor mínimo para Energy: "))
+        max_Energy = float(input("Ingrese el valor máximo para Energy: "))
+        min_Danceability = float(input("Ingrese el valor mínimo para Danceability: "))
+        max_Danceability = float(input("Ingrese el valor máximo para Danceability: "))
+        respuesta= controller.req2(min_Energy,max_Energy, min_Danceability, max_Danceability, catalog)
+        print("Energy is between ", min_Energy, " and ", max_Energy)
+        print("Energy is between ", min_Danceability, " and ", max_Danceability)
+        print("Total of unique tracks in events: ", lt.size(respuesta[0]))
+        ordenar_req2(respuesta[1])
+
+         
     elif int(inputs[0]) == 4:
         print("")
         print("-------------------------------------------------  Requerimiento #3  --------------------------------------------------------")
