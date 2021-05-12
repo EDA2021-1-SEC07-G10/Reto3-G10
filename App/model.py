@@ -41,8 +41,7 @@ def initCatalog(catalog):
     """
     Crea la estructura que almacenará los datos a analizar
     """
-    catalog = {'fechas-hashtag': None, 'propiedades': None, 'fechas-eventos': None, 'hashtags-eventos': None, 'sentiments': None}
-    catalog['fechas-hashtag'] = om.newMap(omaptype='RBT')
+    catalog = {'propiedades': None, 'fechas-eventos': None, 'hashtags-eventos': None, 'sentiments': None}
     catalog['propiedades'] = {'instrumentalness': om.newMap(omaptype='RBT', comparefunction=cmpf_properties),
                               'acousticness': om.newMap(omaptype='RBT', comparefunction=cmpf_properties),
                               'liveness': om.newMap(omaptype='RBT', comparefunction=cmpf_properties),
@@ -58,21 +57,6 @@ def initCatalog(catalog):
     return catalog
 
 # Funciones para agregar informacion al catalogo
-
-def addEvent1(catalog, event):
-    date = event['created_at']
-    key = date[11:]
-    contains = om.contains(catalog['fechas-hashtag'], key)
-    if not contains:
-        structure = {'eventos': lt.newList(datastructure="ARRAY_LIST")}
-        lt.addLast(structure['eventos'], event)
-        om.put(catalog['fechas-hashtag'], key, structure)
-    else:
-        obtained = om.get(catalog['fechas-hashtag'], key)
-        value = obtained['value']
-        lt.addLast(value['eventos'], event)
-        om.put(catalog['fechas-hashtag'], key, value)
-    return catalog
 
 def addEvent1_v2(catalog, event):
     key = event["track_id"]
@@ -202,7 +186,7 @@ def req1(catalog, caracteristica, minimo, maximo):
 
 def req3(catalog, min_instr, max_instr, min_tempo, max_tempo):
     """
-    Soluciona el primer requerimiento.
+    Soluciona el tercer requerimiento.
     Entradas:
     - catalog: Estructura donde se almacenan los datos
     - min_instr: Valor mínimo para Instrumentalness

@@ -28,6 +28,11 @@ assert cf
 from DISClib.ADT import orderedmap as om
 from DISClib.DataStructures import mapentry as me
 from DISClib.ADT import map as mp
+import time
+import tracemalloc
+import sys
+default_limit = 1000
+sys.setrecursionlimit(default_limit*10)
 
 """
 La vista se encarga de la interacción con el usuario
@@ -67,7 +72,7 @@ def preguntar_crear():
     """
     Función que, en el req. 4, se utiliza para validar si quieren añadirse más géneros
     """
-    opcion = int(input("Si desea añadir un género nuevo, ingrese 1. De lo contrario, ingrese 0: "))
+    opcion = int(input("Si desea añadir más generos, ingrese 1. De lo contrario, ingrese 0 para comenzar a calcular: "))
     if opcion == 0:
         return False
     elif opcion == 1:
@@ -115,10 +120,29 @@ while True:
         minimo = str(input("Ingrese el valor mínimo para la característica: "))
         maximo = str(input("Ingrese el valor máximo para la característica: "))
         print("")
+        
+        tracemalloc.start()
+        delta_time = -1.0
+        delta_memory = -1.0
+        start_time = controller.getTime()
+        start_memory = controller.getMemory()
+
         resultado = controller.req1(catalog, caracteristica, minimo, maximo)
+
+        stop_time = controller.getTime()
+        stop_memory = controller.getMemory()
+        tracemalloc.stop()
+        delta_time = stop_time - start_time
+        delta_memory = controller.deltaMemory(start_memory, stop_memory)
+        mediciones = [delta_time, delta_memory]
+        
         print("Para la característica " + caracteristica + ", en el rango " + minimo + " a " + maximo + ":")
         print("> Total de eventos o reproducciones: " + str(resultado[0]))
         print("> Total de artistas únicos: " + str(resultado[1]))
+
+        print("------------------------------------------------------")
+        print("> Tiempo y memoria consumidos:")
+        print("> Tiempo [ms]: ", f"{mediciones[0]:.3f}", " || ", "Memoria [kB]: ", f"{mediciones[1]:.3f}") 
 
     elif int(inputs[0]) == 4:
         print("")
@@ -129,7 +153,22 @@ while True:
         min_tempo = float(input("Ingrese el valor mínimo para Tempo: "))
         max_tempo = float(input("Ingrese el valor máximo para Tempo: "))
         print("")
+
+        tracemalloc.start()
+        delta_time = -1.0
+        delta_memory = -1.0
+        start_time = controller.getTime()
+        start_memory = controller.getMemory()
+
         resultado = controller.req3(catalog, min_instr, max_instr, min_tempo, max_tempo)
+
+        stop_time = controller.getTime()
+        stop_memory = controller.getMemory()
+        tracemalloc.stop()
+        delta_time = stop_time - start_time
+        delta_memory = controller.deltaMemory(start_memory, stop_memory)
+        mediciones = [delta_time, delta_memory]
+        
         print("Para un Instrumentalness entre " + str(min_instr) + " y " + str(max_instr) + ", y un Tempo entre " + str(min_tempo) + " y " + str(max_tempo) + ":")
         print("> Total de Tracks únicos: " + str(resultado[0]))
         print("> Track 1: " + str(resultado[1][0]) + " con Instrumentalness de " + str(resultado[1][1]) + " y Tempo de " + str(resultado[1][2]))
@@ -137,6 +176,10 @@ while True:
         print("> Track 3: " + str(resultado[3][0]) + " con Instrumentalness de " + str(resultado[3][1]) + " y Tempo de " + str(resultado[3][2]))
         print("> Track 4: " + str(resultado[4][0]) + " con Instrumentalness de " + str(resultado[4][1]) + " y Tempo de " + str(resultado[4][2]))
         print("> Track 5: " + str(resultado[5][0]) + " con Instrumentalness de " + str(resultado[5][1]) + " y Tempo de " + str(resultado[5][2]))
+
+        print("------------------------------------------------------")
+        print("> Tiempo y memoria consumidos:")
+        print("> Tiempo [ms]: ", f"{mediciones[0]:.3f}", " || ", "Memoria [kB]: ", f"{mediciones[1]:.3f}") 
     
     elif int(inputs[0]) == 5:
         print("")
@@ -148,10 +191,29 @@ while True:
             nuevo = preguntar_generos()
             lt.addLast(generos, nuevo)
             continuar = preguntar_crear()
+        
+        tracemalloc.start()
+        delta_time = -1.0
+        delta_memory = -1.0
+        start_time = controller.getTime()
+        start_memory = controller.getMemory()
+
         resultado = controller.req4(catalog, generos)
+
+        stop_time = controller.getTime()
+        stop_memory = controller.getMemory()
+        tracemalloc.stop()
+        delta_time = stop_time - start_time
+        delta_memory = controller.deltaMemory(start_memory, stop_memory)
+        mediciones = [delta_time, delta_memory]
+
         print("El total de eventos para los siguientes géneros fue de: " + str(resultado[1]))
         for genero in lt.iterator(resultado[0]):
             print_genero(genero)
+        
+        print("------------------------------------------------------")
+        print("> Tiempo y memoria consumidos:")
+        print("> Tiempo [ms]: ", f"{mediciones[0]:.3f}", " || ", "Memoria [kB]: ", f"{mediciones[1]:.3f}") 
 
     elif int(inputs[0]) == 6:
         print("")
@@ -159,8 +221,27 @@ while True:
         print("")
         minimo = input("Ingrese el valor mínimo de hora (únicamente en formato hh:mm:ss): ")
         maximo = input("Ingrese el valor máximo de hora (únicamente en formato hh:mm:ss): ")
+
+        tracemalloc.start()
+        delta_time = -1.0
+        delta_memory = -1.0
+        start_time = controller.getTime()
+        start_memory = controller.getMemory()
+
         resultado = controller.req5(catalog, minimo, maximo)
+
+        stop_time = controller.getTime()
+        stop_memory = controller.getMemory()
+        tracemalloc.stop()
+        delta_time = stop_time - start_time
+        delta_memory = controller.deltaMemory(start_memory, stop_memory)
+        mediciones = [delta_time, delta_memory]
+        
         print_Req5(resultado, minimo, maximo)
+
+        print("------------------------------------------------------")
+        print("> Tiempo y memoria consumidos:")
+        print("> Tiempo [ms]: ", f"{mediciones[0]:.3f}", " || ", "Memoria [kB]: ", f"{mediciones[1]:.3f}") 
 
     else:
         sys.exit(0)
