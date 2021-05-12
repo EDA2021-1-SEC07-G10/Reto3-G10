@@ -61,6 +61,10 @@ def loadData(catalog):
 # Funciones de consulta sobre el catálogo
 
 def def_generos(contador, generos, elemento):
+    """
+    Función que, en el requerimiento 4, determina los rangos de los
+    géneros dados.
+    """
     if elemento.lower() == "reggae":
         nuevo = ["reggae", 60.0, 90.0]
     elif elemento.lower() == "down-tempo":
@@ -82,15 +86,33 @@ def def_generos(contador, generos, elemento):
     lt.changeInfo(generos, contador, nuevo)
 
 def req1(catalog, caracteristica, minimo, maximo):
+    """
+    Función que se encarga de iniciar la ejecución del requerimiento
+    1 en el model y llevar el resultado al view.
+    """
     return model.req1(catalog, caracteristica, minimo, maximo)
 
 def req2(min_Energy,max_Energy, min_Danceability, max_Danceability, catalog):
+    """
+    Función que se encarga de iniciar la ejecución del requerimiento
+    2 en el model y llevar el resultado al view.
+    """
     return model.req_2(min_Energy,max_Energy, min_Danceability, max_Danceability, catalog)
 
 def req3(catalog, min_instr, max_instr, min_tempo, max_tempo):
+    """
+    Función que se encarga de iniciar la ejecución del requerimiento
+    3 en el model y llevar el resultado al view.
+    """
     return model.req3(catalog, min_instr, max_instr, min_tempo, max_tempo)
 
 def req4(catalog, generos):
+    """
+    Función que se encarga de iniciar la ejecución del requerimiento
+    4 en el model y llevar el resultado al view.
+    Además determina a informa al model los rangos de tempo para los
+    géneros dados.
+    """
     contador = 1
     while contador <= lt.size(generos):
         genero = lt.getElement(generos, contador)
@@ -100,6 +122,10 @@ def req4(catalog, generos):
     return model.req4(catalog, generos)
 
 def req5(catalog, minimo, maximo):
+    """
+    Función que se encarga de iniciar la ejecución del requerimiento
+    5 en el model y llevar el resultado al view.
+    """
     return model.req5(catalog, minimo, maximo)
 
 # ======================================

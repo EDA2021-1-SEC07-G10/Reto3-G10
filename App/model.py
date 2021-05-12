@@ -205,13 +205,18 @@ def req_2(min_Energy,max_Energy, min_Danceability, max_Danceability, catalog):
 
 def req3(catalog, min_instr, max_instr, min_tempo, max_tempo):
     """
-    Soluciona el tercer requerimiento.
+    Dados un rango de instrumentalness y uno de tempo, devuelve
+    la cantidad de pistas únicas y la información de 5 de ellas.
+
     Entradas:
     - catalog: Estructura donde se almacenan los datos
     - min_instr: Valor mínimo para Instrumentalness
     - max_instr: Valor máximo para Instrumentalness
     - min_tempo: Valor mínimo para Tempo
     - max_tempo: Valor máximo para Tempo
+
+    Salidas:
+    - Lista que almacena la cantidad de pistas y la información de 5 de ellas
     """
     # Se filtra por Instrumentalness y el rango dado
     instr_total = catalog["propiedades"]["instrumentalness"]
@@ -245,6 +250,18 @@ def req3(catalog, min_instr, max_instr, min_tempo, max_tempo):
 
 
 def req4(catalog, generos):
+    """
+    Dada una lista de géneros existentes y/o nuevos, se devuelve información
+    de los mismos como los eventos de escucha y algunos de sus artistas.
+
+    Entradas:
+    - catalog: Estructura donde se almacenan los datos
+    - generos: Lista de géneros dados
+
+    Salidas:
+    - Lista con la información sobre los géneros y sus artistas, y la cantidad
+      total de eventos.
+    """
     tempo_total = catalog["propiedades"]["tempo"]
 
     nuevos_generos = lt.newList(datastructure='ARRAY_LIST')
@@ -254,18 +271,22 @@ def req4(catalog, generos):
         artists_list = lt.newList(datastructure='ARRAY_LIST')
         total_events = 0
         genero = lt.getElement(generos, contador)
+        # Se filtra el Map de Tempo para cada género dado
         tempo_filtrado = om.values(tempo_total, genero[1], genero[2])
         for value in lt.iterator(tempo_filtrado):
             for event in lt.iterator(value['eventos']):
                 total_events += 1
                 val = 0
+                # Se añaden los eventos a un mapa para contar la cantidad en cada género
                 om.put(events_map, event['id'], val)
+                # Se añaden los artistas a un mapa para identificar los artistas "únicos"
                 elem = event['artist_id']
                 contiene = lt.isPresent(artists_list, elem)
                 if contiene:
                     pass
                 else:
                     lt.addLast(artists_list, elem)
+        
         total_artists = lt.size(artists_list)
         ten_artists = lt.subList(artists_list, 1, 10)
         nuevo = {}
@@ -280,6 +301,11 @@ def req4(catalog, generos):
     return [nuevos_generos, total_tot_eventos]
     
 def determinarGeneros(event, generos):
+    """
+    Función que, en el requerimiento 5, se encarga de determinar qué rango de
+    Tempo tiene el género de un evento. Esta información se adicciona a una
+    lista con los géneros
+    """
     if (float(event["tempo"]) >= 60.0) and (float(event["tempo"]) <= 90.0):
         generos.append("reggae,60.0,90.0")
     if (float(event["tempo"]) >= 70.0) and (float(event["tempo"]) <= 100.0):
@@ -302,25 +328,42 @@ def determinarGeneros(event, generos):
 
 
 def req5(catalog, minimo, maximo):
+    """
+    Dados un rango de horas, se devuelve el género más escuchado en dicho rango,
+    y demás información como el promedio de Vader de los hashtags de 10 pistas
+    aleatorias del mismo.
+
+    Entradas:
+    - catalog: Estructura donde se almacenan los datos
+    - minimo: Valor mínimo del rango de horas
+    - maximo: Valor máximo del rango de horas
+
+    Salidas:
+    - Diccionario con el género encontrado, la cantidad de reproducciones del
+      mismo, y la información de las 10 pistas escogidas
+    """
     eventos = catalog["fechas-eventos"]
+    # Se filtra por el rango de horas
     eventos_filtrado = om.values(eventos, minimo, maximo)
 
     map_tempo = om.newMap('RBT')
     generos = []
-
+    # Se pasan los eventos a un mapa nuevo
     for value in lt.iterator(eventos_filtrado):
         for event in lt.iterator(value['eventos']):
             key = str(event['tempo']) + "," + str(event['user_id']) + "," + str(event['track_id']) + "," + str(event['created_at'])
             om.put(map_tempo, key, 0)
             generos_event = determinarGeneros(event, generos)
 
+    # Se determina el género que más se repite
     genero_moda = stat.mode(generos)
     genmod_datos = genero_moda.split(",")
     min_tempo = genmod_datos[1]
     max_tempo = genmod_datos[2]
+    # Sabiendo el género, se filtran los eventos por los rangos de tempo
     tempo_filtrado = om.keys(map_tempo, min_tempo, max_tempo)
 
-
+    # Se seleccionan 10 tracks aleatorios
     generos_top = lt.newList(datastructure='ARRAY_LIST')
     contador = 1
     while contador <= 10:
@@ -328,6 +371,7 @@ def req5(catalog, minimo, maximo):
         pos = random.randint(1, list_size)
         elem = lt.getElement(tempo_filtrado, pos)
 
+        # Se determinan sus hashtags 
         datos_elem = elem.split(",")
         track = datos_elem[1:]
         map_hashtags = catalog['hashtags-eventos']
@@ -336,11 +380,11 @@ def req5(catalog, minimo, maximo):
         for ev in lt.iterator(events['value']['eventos']):
             if (str(ev['user_id']) == str(track[0])) and (str(ev['created_at']) == str(track[2])):
                 datos_event['hashtags'].append(ev['hashtag'])
-        
+
+        # Se determina el vader promedio de sus hashtags, descartando los que no tengan valor vader_avg
         map_sentiments = catalog['sentiments']
         promedio = 0
         conteo = 0
-
         for hasht in datos_event['hashtags']:
             sent_hashtag = om.get(map_sentiments, hasht.lower())
             if sent_hashtag != None:
@@ -351,7 +395,6 @@ def req5(catalog, minimo, maximo):
                 if vader != None:
                     promedio += vader
                     conteo += 1
-
         if conteo != 0:
             promedio = float(promedio)/float(conteo)
         else:
