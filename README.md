@@ -18,6 +18,6 @@ Este directorio contiene las pruebas realizadas a los TADs, Estructuras de Datos
 
 Integrantes:
 
-- María Paula Alméciga Moreno, m.almeciga@uniandes.edu.co, 202023369
+- María Paula Alméciga Moreno, m.almeciga@uniandes.edu.co, 202023369 (Estudiante B)
 
-- Andrés Felipe Vargas Cuadros, af.vargasc1@uniandes.edu.co, 202013817
+- Andrés Felipe Vargas Cuadros, af.vargasc1@uniandes.edu.co, 202013817 (Estudiante A)
