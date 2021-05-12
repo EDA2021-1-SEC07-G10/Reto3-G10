@@ -31,6 +31,7 @@ from DISClib.ADT import orderedmap as om
 from DISClib.DataStructures import mapentry as me
 from DISClib.ADT import map as mp
 from DISClib.Algorithms.Sorting import shellsort as sa
+from DISClib.DataStructures import listiterator as it
 import random
 import statistics as stat
 assert cf
@@ -182,7 +183,25 @@ def req1(catalog, caracteristica, minimo, maximo):
     total_artists = om.size(artists_map)
 
     return [total_events, total_artists]
+def req_2(min_Energy,max_Energy, min_Danceability, max_Danceability, catalog):
+    arbol= catalog['propiedades']['danceability']
+    lista= om.values(arbol,min_Danceability,max_Danceability)
+    lista_tracks= lt.newList("ARRAY_LIST")
+    cancion_completa=lt.newList("ARRAY_LIST")
+    
+    for elementos in lt.iterator(lista):
+        for canciones in lt.iterator(elementos['eventos']):
+            if (float(canciones["energy"])>= min_Energy and float(canciones["energy"])<=max_Energy):
+                track_ID=canciones["track_id"]
+                if int(lt.isPresent(lista_tracks, track_ID))== 0:
+                    lt.addLast(lista_tracks, track_ID)
+                    lt.addLast(cancion_completa, canciones)
+                else: 
+                    lt.addLast(cancion_completa, canciones)
 
+
+
+    return lista_tracks, cancion_completa
 
 def req3(catalog, min_instr, max_instr, min_tempo, max_tempo):
     """

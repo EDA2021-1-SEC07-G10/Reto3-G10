@@ -84,6 +84,9 @@ def def_generos(contador, generos, elemento):
 def req1(catalog, caracteristica, minimo, maximo):
     return model.req1(catalog, caracteristica, minimo, maximo)
 
+def req2(min_Energy,max_Energy, min_Danceability, max_Danceability, catalog):
+    return model.req_2(min_Energy,max_Energy, min_Danceability, max_Danceability, catalog)
+
 def req3(catalog, min_instr, max_instr, min_tempo, max_tempo):
     return model.req3(catalog, min_instr, max_instr, min_tempo, max_tempo)
 
@@ -132,3 +135,7 @@ def deltaMemory(start_memory, stop_memory):
     # de Byte -> kByte
     delta_memory = delta_memory/1024.0
     return delta_memory
+    
+def req_2(min_Energy, max_Energy, min_Danceability, max_Danceability, catalog):
+
+    return model.requerimiento_2(min_Energy, max_Energy, min_Danceability, max_Danceability, catalog)
